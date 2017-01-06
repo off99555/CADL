@@ -339,7 +339,7 @@ def train_vae(files,
     # Start up the queues for handling the image pipeline
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-    if os.path.exists(ckpt_name):
+    if os.path.exists(ckpt_name + '.index'):
         saver.restore(sess, ckpt_name)
 
     # Fit all training data
@@ -389,7 +389,7 @@ def train_vae(files,
 
             if batch_i % save_step == 0:
                 # Save the variables to disk.
-                saver.save(sess, "./" + ckpt_name,
+                saver.save(sess, ckpt_name,
                            global_step=batch_i,
                            write_meta_graph=False)
     except tf.errors.OutOfRangeError:
@@ -497,7 +497,7 @@ def test_celeb():
         dropout=True,
         filter_sizes=[3, 3, 3],
         activation=tf.nn.sigmoid,
-        ckpt_name='celeb.ckpt')
+        ckpt_name='./celeb.ckpt')
 
 
 def test_sita():
@@ -525,7 +525,7 @@ def test_sita():
         dropout=True,
         filter_sizes=[3, 3, 3],
         activation=tf.nn.sigmoid,
-        ckpt_name='sita.ckpt')
+        ckpt_name='./sita.ckpt')
 
 
 if __name__ == '__main__':

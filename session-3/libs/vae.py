@@ -339,7 +339,7 @@ def train_vae(files,
     # Start up the queues for handling the image pipeline
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-    if os.path.exists(ckpt_name):
+    if os.path.exists(ckpt_name + '.index'):
         saver.restore(sess, ckpt_name)
 
     # Fit all training data
@@ -407,7 +407,7 @@ def train_vae(files,
 
 
 # %%
-def test_mnist():
+def test_mnist(n_epochs=10):
     """Train an autoencoder on MNIST.
 
     This function will train an autoencoder on MNIST and also
@@ -440,7 +440,6 @@ def test_mnist():
     t_i = 0
     batch_i = 0
     batch_size = 200
-    n_epochs = 10
     test_xs = mnist.test.images[:n_examples]
     utils.montage(test_xs.reshape((-1, 28, 28)), 'test_xs.png')
     for epoch_i in range(n_epochs):
@@ -478,7 +477,7 @@ def test_mnist():
         print('train:', train_cost / train_i, 'valid:', valid_cost / valid_i)
 
 
-def test_celeb():
+def test_celeb(n_epochs=50):
     """Train an autoencoder on Celeb Net.
     """
     files = CELEB()
@@ -486,7 +485,7 @@ def test_celeb():
         files=files,
         input_shape=[218, 178, 3],
         batch_size=100,
-        n_epochs=50,
+        n_epochs=n_epochs,
         crop_shape=[64, 64, 3],
         crop_factor=0.8,
         convolutional=True,
@@ -497,7 +496,7 @@ def test_celeb():
         dropout=True,
         filter_sizes=[3, 3, 3],
         activation=tf.nn.sigmoid,
-        ckpt_name='celeb.ckpt')
+        ckpt_name='./celeb.ckpt')
 
 
 def test_sita():
@@ -525,7 +524,7 @@ def test_sita():
         dropout=True,
         filter_sizes=[3, 3, 3],
         activation=tf.nn.sigmoid,
-        ckpt_name='sita.ckpt')
+        ckpt_name='./sita.ckpt')
 
 
 if __name__ == '__main__':

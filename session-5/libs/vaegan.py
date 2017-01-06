@@ -536,7 +536,7 @@ def train_vaegan(files,
     tf.get_default_graph().finalize()
     threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-    if os.path.exists(ckpt_name):
+    if os.path.exists(ckpt_name + '.index'):
         saver.restore(sess, ckpt_name)
         print("VAE model restored.")
 
@@ -618,7 +618,7 @@ def train_vaegan(files,
 
             if batch_i % 100 == 0:
                 # Save the variables to disk.
-                save_path = saver.save(sess, "./" + ckpt_name,
+                save_path = saver.save(sess, ckpt_name,
                                        global_step=batch_i,
                                        write_meta_graph=False)
                 print("Model saved in file: %s" % save_path)
@@ -636,7 +636,7 @@ def train_vaegan(files,
     sess.close()
 
 
-def test_celeb():
+def test_celeb(n_epochs=100):
     """Summary
 
     Returns
@@ -648,21 +648,21 @@ def test_celeb():
     train_vaegan(
         files=files,
         batch_size=64,
-        n_epochs=100,
+        n_epochs=n_epochs,
         crop_shape=[100, 100, 3],
         crop_factor=0.8,
         input_shape=[218, 178, 3],
         convolutional=True,
         variational=True,
-        n_filters=[256, 384, 512, 1024, 2048],
+        n_filters=[100, 100, 100, 100],
         n_hidden=None,
-        n_code=512,
-        filter_sizes=[3, 3, 3, 3, 3],
+        n_code=64,
+        filter_sizes=[3, 3, 3, 3],
         activation=tf.nn.elu,
-        ckpt_name='celeb.ckpt')
+        ckpt_name='./celeb.ckpt')
 
 
-def test_sita():
+def test_sita(n_epochs=100):
     """Summary
 
     Returns
@@ -680,7 +680,7 @@ def test_sita():
     train_vaegan(
         files=files,
         batch_size=64,
-        n_epochs=50,
+        n_epochs=n_epochs,
         crop_shape=[90, 160, 3],
         crop_factor=1.0,
         input_shape=[218, 178, 3],
@@ -691,7 +691,7 @@ def test_sita():
         n_code=100,
         filter_sizes=[3, 3, 3, 3, 2],
         activation=tf.nn.elu,
-        ckpt_name='sita.ckpt')
+        ckpt_name='./sita.ckpt')
 
 
 if __name__ == '__main__':

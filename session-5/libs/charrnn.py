@@ -111,7 +111,7 @@ def train(txt, batch_size=100, sequence_length=150, n_cells=100, n_layers=3,
         init_op = tf.global_variables_initializer()
         saver = tf.train.Saver()
         sess.run(init_op)
-        if os.path.exists(ckpt_name):
+        if os.path.exists(ckpt_name + '.index'):
             saver.restore(sess, ckpt_name)
             print("Model restored.")
 
@@ -163,7 +163,7 @@ def train(txt, batch_size=100, sequence_length=150, n_cells=100, n_layers=3,
                 print(it_i, avg_cost / print_step)
                 avg_cost = 0
 
-                save_path = saver.save(sess, "./" + ckpt_name, global_step=it_i)
+                save_path = saver.save(sess, ckpt_name, global_step=it_i)
                 print("Model saved in file: %s" % save_path)
 
             print(it_i, out[0], end='\r')
@@ -190,7 +190,7 @@ def infer(txt, ckpt_name, n_iterations, n_cells=512, n_layers=3,
         init_op = tf.global_variables_initializer()
         saver = tf.train.Saver()
         sess.run(init_op)
-        if os.path.exists(ckpt_name):
+        if os.path.exists(ckpt_name + '.index'):
             saver.restore(sess, ckpt_name)
             print("Model restored.")
 
@@ -232,18 +232,16 @@ def infer(txt, ckpt_name, n_iterations, n_cells=512, n_layers=3,
     return [model['decoder'][ch] for ch in np.concatenate(synth)]
 
 
-def test_alice():
+def test_alice(max_iter=100):
     with gzip.open('alice.txt.gz', 'rb') as fp:
         txt = fp.read().decode('utf-8')
-    # try with more than 100 iterations, e.g. 50k - 200k
-    train(txt, max_iter=100)
+    train(txt, max_iter=max_iter)
 
 
-def test_trump():
+def test_trump(max_iter=100):
     with open('trump.txt', 'r') as fp:
         txt = fp.read()
-    # train(txt, max_iter=50000)
-    # try with more than 100 iterations, e.g. 50k - 200k
+    # train(txt, max_iter=max_iter)
     print(infer(txt, './trump.ckpt', 100))
 
 
